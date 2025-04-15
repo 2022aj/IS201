@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship Game</title>
+    <style>
+        body {
+            background-color: rgb(50, 179, 230);
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #instructions {
+            margin-right: 130px;
+            text-align: center;
+            font-size: 14px;
+        }
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            gap: 5px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 255, 0.5);
+            border: 1px solid white;
+            cursor: pointer;
+            position: relative;
+        }
+        .hit {
+            background-image: url('https://example.com/ship.png');
+            background-size: cover;
+        }
+        .hit::after {
+            content: 'X';
+            color: red;
+            font-size: 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #legend {
+            margin-top: 20px;
+        }
+        #play-again {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <p>Tap on a square. If a ship is there, a red X will appear. 
+            <br>If not, it will turn purple. Keep playing until you sink all 5 ships!!</p>
+    </div>
+    <div id="game-container">
+        <h1>Battleship Game</h1>
+        <div id="game-board"></div>
+        <div id="legend">
+            <p>Ships Hit: <span id="ships-hit">0</span></p>
+            <p>Ships Left: <span id="ships-left">5</span></p>
+        </div>
+        <button id="play-again">Play Again</button>
+    </div>
+
+    <script>
+        const boardSize = 10;
+        const totalShips = 5;
+        let shipsHit = 0;
+        let shipsLeft = totalShips;
+        const shipPositions = new Set();
+
+        while (shipPositions.size < totalShips) {
+            shipPositions.add(Math.floor(Math.random() * boardSize * boardSize));
+        }
+
+        const gameBoard = document.getElementById('game-board');
+        const shipsHitDisplay = document.getElementById('ships-hit');
+        const shipsLeftDisplay = document.getElementById('ships-left');
+        const playAgainButton = document.getElementById('play-again');
+
+        for (let i = 0; i < boardSize * boardSize; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.addEventListener('click', () => {
+                if (shipPositions.has(i)) {
+                    cell.classList.add('hit');
+                    shipsHit++;
+                    shipsLeft--;
+                    shipsHitDisplay.textContent = shipsHit;
+                    shipsLeftDisplay.textContent = shipsLeft;
+                    if (shipsLeft === 0) {
+                        alert('You win!');
+                        playAgainButton.style.display = 'block';
+                    }
+                } else {
+                    cell.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
+                }
+                cell.style.pointerEvents = 'none';
+            });
+            gameBoard.appendChild(cell);
+        }
+
+        playAgainButton.addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
